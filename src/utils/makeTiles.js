@@ -10,7 +10,8 @@ export default () =>
         x,
         y,
       },
-      hasMine: random() > 0.75,
+      shouldHaveMine: true,
+      hasMine: random() > 0.8,
       hasBeenSweeped: false,
     }))
   );

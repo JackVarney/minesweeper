@@ -3,12 +3,12 @@ import { makeTiles } from '../utils';
 export default {
   setNewTiles: () => state => ({ tiles: makeTiles() }),
   updateTile: tile => state => {
-    console.log(tile);
     const { tiles } = state;
     const { x, y } = tile.point;
 
     tiles[x][y] = tile;
+    const gameOver = tile.hasMine && tile.hasBeenSweeped;
 
-    return { tiles };
+    return { tiles, gameOver };
   },
 };

@@ -1,2 +1,11 @@
 import makeTiles from './makeTiles';
-export { makeTiles };
+import getSurroundingMineCount from './getSurroundingMineCount';
+import cleanUpZeroes from './cleanUpZeroes';
+import iterateSurroundingGrid from './iterateSurroundingGrid';
+
+export {
+  makeTiles,
+  getSurroundingMineCount,
+  cleanUpZeroes,
+  iterateSurroundingGrid,
+};
