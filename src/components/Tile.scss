@@ -16,3 +16,11 @@
 .tile--should-have-mine {
   background-color: darkred;
 }
+
+.tile--targeting-mine {
+  cursor: crosshair;
+}
+
+.tile--preventing-mine {
+  cursor: help;
+}

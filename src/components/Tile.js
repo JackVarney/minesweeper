@@ -2,44 +2,84 @@ import { h } from 'hyperapp';
 import './Tile.scss';
 import { getSurroundingMineCount, cleanUpZeroes } from '../utils';
 
-const onClick = (tile, updateTile, surroundingMineCount) => () => {
-  tile.hasBeenSweeped = true;
+let _updateTile;
+let _setGameOver;
 
-  if (!tile.hasMine && surroundingMineCount === 0) {
-    cleanUpZeroes(tile.point);
+const onClick = (
+  tile,
+  tiles,
+  userIsFlaggingMines,
+  surroundingMineCount
+) => () => {
+  if (userIsFlaggingMines) {
+    tile.flaggedForMine = !tile.flaggedForMine;
+  } else if (!tile.flaggedForMine) {
+    tile.hasBeenSweeped = true;
+
+    if (tile.hasMine) {
+      _setGameOver(true);
+    } else if (surroundingMineCount === 0) {
+      cleanUpZeroes(tile.point, tiles);
+    }
   }
 
-  updateTile(tile);
+  _updateTile(tile);
 };
 
-export default ({ tile, updateTile }) => {
-  const surroundingMineCount = getSurroundingMineCount(tile);
-  const { hasMine, hasBeenSweeped, shouldHaveMine } = tile;
-  const onclick = onClick(tile, updateTile, surroundingMineCount);
+export default ({
+  tile,
+  tiles,
+  updateTile,
+  userIsFlaggingMines,
+  gameOver,
+  setGameOver,
+}) => {
+  if (!_updateTile) _updateTile = updateTile;
+  if (!_setGameOver) _setGameOver = setGameOver;
+
+  const { hasMine, hasBeenSweeped, flaggedForMine } = tile;
+  const surroundingMineCount = getSurroundingMineCount(tile, tiles);
+
+  const onclick = gameOver
+    ? null
+    : onClick(tile, tiles, userIsFlaggingMines, surroundingMineCount);
+
+  const cursorClass = userIsFlaggingMines
+    ? 'tile--preventing-mine'
+    : 'tile--targeting-mine';
 
   switch (true) {
     case hasMine && hasBeenSweeped: {
+      return <div className={`tile tile--has-mine ${cursorClass}`}>!</div>;
+    }
+
+    case hasBeenSweeped: {
       return (
-        <div onclick={onclick} className="tile tile--has-mine">
-          !
+        <div className={`tile tile--sweeped ${cursorClass}`}>
+          {surroundingMineCount}
         </div>
       );
     }
 
-    case hasBeenSweeped: {
-      return <div className="tile tile--sweeped">{surroundingMineCount}</div>;
-    }
-
-    case !shouldHaveMine: {
+    case flaggedForMine: {
       return (
-        <div onclick={onclick} className="tile tile--should-have-mine">
+        <div
+          onclick={onclick}
+          className={`tile tile--should-have-mine ${cursorClass}`}
+        >
           ?
         </div>
       );
     }
 
     default: {
-      return <div onclick={onclick} className="tile" />;
+      return (
+        <div
+          oncontextmenu={() => false}
+          onclick={onclick}
+          className={`tile ${cursorClass}`}
+        />
+      );
     }
   }
 };

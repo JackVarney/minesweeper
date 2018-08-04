@@ -1,7 +1,7 @@
 import { range } from 'lodash';
 
 const { random } = Math;
-const gridSize = 10;
+const gridSize = 15;
 
 export default () =>
   range(gridSize).map(x =>
@@ -10,8 +10,8 @@ export default () =>
         x,
         y,
       },
-      shouldHaveMine: true,
       hasMine: random() > 0.8,
       hasBeenSweeped: false,
+      flaggedForMine: false,
     }))
   );

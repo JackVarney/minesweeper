@@ -1,18 +1,20 @@
 import { getSurroundingMineCount, iterateSurroundingGrid } from '.';
-import state from '../state';
+const cleanUpZeroes = (point, tiles) => {
+  iterateSurroundingGrid(
+    (x, y) => {
+      const tile = tiles[x][y];
 
-const cleanUpZeroes = (point, tiles = state.tiles) => {
-  iterateSurroundingGrid((x, y) => {
-    const tile = tiles[x][y];
+      if (!tile.hasBeenSweeped) {
+        tile.hasBeenSweeped = true;
 
-    if (!tile.hasBeenSweeped) {
-      tile.hasBeenSweeped = true;
-
-      if (getSurroundingMineCount(tile) === 0) {
-        tiles = cleanUpZeroes(tile.point, tiles);
+        if (getSurroundingMineCount(tile, tiles) === 0) {
+          tiles = cleanUpZeroes(tile.point, tiles);
+        }
       }
-    }
-  }, point);
+    },
+    point,
+    tiles.length
+  );
 
   return tiles;
 };

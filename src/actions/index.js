@@ -1,7 +1,11 @@
 import { makeTiles } from '../utils';
 
 export default {
-  setNewTiles: () => state => ({ tiles: makeTiles() }),
+  setNewTiles: () => () => ({ tiles: makeTiles() }),
+  setGameOver: gameOver => () => ({ gameOver }),
+  toggleUserIsFlaggingMines: () => state => ({
+    userIsFlaggingMines: !state.userIsFlaggingMines,
+  }),
   updateTile: tile => state => {
     const { tiles } = state;
     const { x, y } = tile.point;

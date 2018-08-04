@@ -1,6 +1,4 @@
-import state from '../state';
-
-export default (cb, { x, y }, length = state.tiles.length) => {
+export default (cb, { x, y }, length) => {
   const gridEnd = length - 1;
 
   const rowStart = x === 0 ? x : x - 1;
